@@ -7,8 +7,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import {
-    LayoutDashboard, Users, FileQuestion, LogOut, Plus, Trash2 as Trash, Search,
-    RotateCcw, Eye, X, Check, CheckCircle, XCircle, Lock, List, RefreshCw, Share2
+    FileQuestion, LogOut, Plus, Trash2 as Trash, Search,
+    RotateCcw, Eye, X, Lock, List, RefreshCw, Share2, Check, CheckCircle, XCircle
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import QRCode from "react-qr-code"
@@ -110,10 +110,10 @@ export default function AdminDashboard() {
         try {
             if (activeTab === 'results') {
                 const data = await getResults()
-                setResults(data as any)
+                setResults(data as unknown as ResultWithUser[])
             } else {
                 const data = await getAdminQuestions(filterSubject)
-                setQuestions(data as any)
+                setQuestions(data as unknown as Question[])
             }
         } catch (e) {
             console.error(e)
@@ -127,7 +127,7 @@ export default function AdminDashboard() {
         if (!gradingResultId) return
         const loadGrading = async () => {
             const data = await getGradingData(gradingResultId)
-            setGradingData(data as any)
+            setGradingData(data as unknown as GradingData)
         }
         loadGrading()
     }, [gradingResultId])
@@ -178,7 +178,7 @@ export default function AdminDashboard() {
         // Refresh local grading data
         if (gradingResultId) {
             const data = await getGradingData(gradingResultId)
-            setGradingData(data as any)
+            setGradingData(data as unknown as GradingData)
             // If completed, close modal
             if (data?.result.status === 'COMPLETED') {
                 setTimeout(() => setGradingResultId(null), 1000)

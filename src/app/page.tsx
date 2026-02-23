@@ -75,9 +75,10 @@ export default function Home() {
       // Save to storage immediately on login
       sessionStorage.setItem('test_user_id', user.id)
       sessionStorage.setItem('test_user_name', `${user.firstName} ${user.lastName}`)
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error("Login Error:", e)
-      setError(e.message || 'Failed to login. Please try again.')
+      const err = e as Error
+      setError(err.message || 'Failed to login. Please try again.')
     } finally {
       setLoading(false)
     }

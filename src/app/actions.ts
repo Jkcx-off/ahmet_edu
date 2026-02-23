@@ -51,7 +51,7 @@ export async function getQuestions(subject: string, classLevel: number) {
     })
 
     // Shuffle function
-    const shuffle = (arr: any[]) => {
+    const shuffle = (arr: unknown[]) => {
         for (let i = arr.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [arr[i], arr[j]] = [arr[j], arr[i]];
@@ -172,7 +172,7 @@ export async function submitTest(userId: string, subject: string, answers: Recor
                 textAnswersToSave.push({
                     questionId: q.id,
                     text: userAnswer,
-                    isCorrect: null as any // Pending
+                    isCorrect: null as unknown as boolean // Pending manual review
                 })
             }
         }

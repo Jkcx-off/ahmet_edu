@@ -368,7 +368,7 @@ export default function QuizRunner({ questions, subject, classLevel }: QuizRunne
                                 <h3 className="text-lg font-medium text-white mb-2">Speaking Task</h3>
                                 <p className="text-slate-400 max-w-md">
                                     Please raise your hand and present your answer to the instructor.
-                                    Click "Mark as Completed" when you are finished.
+                                    Click &quot;Mark as Completed&quot; when you are finished.
                                 </p>
                             </div>
                             <Button
