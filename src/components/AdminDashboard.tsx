@@ -338,24 +338,48 @@ export default function AdminDashboard() {
 
             {showQR && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setShowQR(false)}>
-                    <Card className="w-full max-w-sm bg-white dark:bg-slate-900" onClick={e => e.stopPropagation()}>
-                        <CardHeader className="text-center pb-2">
-                            <CardTitle>Scan to Open App</CardTitle>
-                            <CardDescription>Use your phone camera to scan this QR code</CardDescription>
+                    <Card className="w-full max-w-2xl bg-white dark:bg-slate-900" onClick={e => e.stopPropagation()}>
+                        <CardHeader className="text-center pb-2 border-b">
+                            <CardTitle>Share Application</CardTitle>
+                            <CardDescription>Students can join via Internet or Local School Wi-Fi</CardDescription>
                         </CardHeader>
-                        <CardContent className="flex flex-col items-center justify-center p-6 pt-2">
-                            <div className="p-4 bg-white rounded-lg shadow-inner border">
-                                <QRCode value="http://192.168.5.135:3000" size={200} />
+                        <CardContent className="flex flex-col sm:flex-row gap-8 items-center justify-center p-6">
+
+                            {/* Internet QR */}
+                            <div className="flex flex-col items-center flex-1">
+                                <h3 className="font-bold text-lg mb-2 text-blue-600">Internet Access</h3>
+                                <p className="text-xs text-slate-500 mb-4 text-center">Use from anywhere in the world</p>
+                                <div className="p-4 bg-white rounded-lg shadow-md border-2 border-blue-100 flex items-center justify-center mb-4">
+                                    <QRCode value="https://ahmet-edu.vercel.app" size={160} />
+                                </div>
+                                <div className="flex w-full items-center gap-2 mt-auto">
+                                    <p className="text-center text-xs font-mono bg-slate-100 dark:bg-slate-800 p-2 rounded flex-1 truncate">
+                                        https://ahmet-edu.vercel.app
+                                    </p>
+                                    <Button size="sm" variant="outline" onClick={() => navigator.clipboard.writeText("https://ahmet-edu.vercel.app")}>Copy</Button>
+                                </div>
                             </div>
-                            <p className="mt-4 text-center text-sm font-mono bg-slate-100 dark:bg-slate-800 p-2 rounded w-full">
-                                http://192.168.5.135:3000
-                            </p>
-                            <p className="text-xs text-slate-500 mt-2 text-center">
-                                Ensure your device is connected to the same Wi-Fi network.
-                            </p>
+
+                            <div className="hidden sm:block w-px h-48 bg-slate-200 dark:bg-slate-700"></div>
+
+                            {/* Local Wi-Fi QR */}
+                            <div className="flex flex-col items-center flex-1">
+                                <h3 className="font-bold text-lg mb-2 text-emerald-600">Offline (Local Wi-Fi)</h3>
+                                <p className="text-xs text-slate-500 mb-4 text-center">Use only in the school network</p>
+                                <div className="p-4 bg-white rounded-lg shadow-md border-2 border-emerald-100 flex items-center justify-center mb-4">
+                                    <QRCode value="http://192.168.5.135:3000" size={160} />
+                                </div>
+                                <div className="flex w-full items-center gap-2 mt-auto">
+                                    <p className="text-center text-xs font-mono bg-slate-100 dark:bg-slate-800 p-2 rounded flex-1 truncate">
+                                        http://192.168.5.135:3000
+                                    </p>
+                                    <Button size="sm" variant="outline" onClick={() => navigator.clipboard.writeText("http://192.168.5.135:3000")}>Copy</Button>
+                                </div>
+                            </div>
+
                         </CardContent>
-                        <CardFooter>
-                            <Button className="w-full" onClick={() => setShowQR(false)}>Close</Button>
+                        <CardFooter className="pt-2 border-t mt-4">
+                            <Button className="w-full" variant="outline" onClick={() => setShowQR(false)}>Close Window</Button>
                         </CardFooter>
                     </Card>
                 </div>
