@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  firstName String
+  lastName  String
+  createdAt DateTime @default(now())
+  results   Result[]
+}
+
+model Result {
+  id         String   @id @default(uuid())
+  score      Int
+  subject    String
+  classLevel Int      @default(10) // Default for existing data
+  status     String
+  createdAt  DateTime @default(now())
+  userId     String
+  answers    Answer[]
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Question {
+  id                String   @id @default(uuid())
+  subject           String
+  text              String
+  type              String   @default("MCQ")
+  options           String?
+  correctOption     Int?
+  correctAnswerText String?
+  classLevel        Int      @default(10) // Default for existing data
+  difficulty        Int      @default(1)
+  createdAt         DateTime @default(now())
+}
+
+model Answer {
+  id         String   @id @default(uuid())
+  resultId   String
+  questionId String
+  textAnswer String
+  isCorrect  Boolean?
+  Result     Result   @relation(fields: [resultId], references: [id], onDelete: Cascade)
+}

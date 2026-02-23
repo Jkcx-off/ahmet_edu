@@ -1,26 +1,58 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --foreground-rgb: 15, 23, 42;
+  /* slate-900 */
+  --background-start: #e0f2fe;
+  /* sky-100 */
+  --background-end: #f0f9ff;
+  /* sky-50 */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --foreground-rgb: 226, 232, 240;
+    /* slate-200 */
+    --background-start: #0f172a;
+    /* slate-900 */
+    --background-end: #1e293b;
+    /* slate-800 */
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color: rgb(var(--foreground-rgb));
+  /* background: linear-gradient(to bottom right,
+      var(--background-start),
+      var(--background-end)); */
+  min-height: 100vh;
+}
+
+.glass {
+  /* Light mode glass */
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+  .glass {
+    /* Dark mode glass default */
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Force text colors in glass components if needed */
+.glass h1,
+.glass h2,
+.glass h3,
+.glass p,
+.glass span {
+  /* inherit color */
 }
