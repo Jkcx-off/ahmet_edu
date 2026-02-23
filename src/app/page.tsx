@@ -108,7 +108,7 @@ export default function Home() {
     )}>
       <div className="z-10 w-full flex flex-col items-center justify-center space-y-8 animate-in fade-in duration-700">
         <h1 className="text-4xl font-serif font-bold tracking-tight text-white mb-4">
-          EduTester
+          Sopandai EduTester
         </h1>
       </div>
 
