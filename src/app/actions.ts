@@ -4,29 +4,31 @@ import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 
 export async function loginUser(firstName: string, lastName: string) {
-    // Simple check: find or create user.
-    // In a real app, this might be more complex.
-    const user = await prisma.user.findFirst({
-        where: {
-            firstName,
-            lastName,
-        },
-    })
+    try {
+        const user = await prisma.user.findFirst({
+            where: {
+                firstName,
+                lastName,
+            },
+            select: { id: true, firstName: true, lastName: true }
+        })
 
-    if (user) {
-        // Check if user has already taken tests?
-        // The requirement says "after completion, access to the test for this user is blocked".
-        // We can check that later when they select a subject.
-        return user
+        if (user) {
+            return user
+        }
+
+        const newUser = await prisma.user.create({
+            data: {
+                firstName,
+                lastName,
+            },
+            select: { id: true, firstName: true, lastName: true }
+        })
+        return newUser
+    } catch (error: Error | any) {
+        console.error("PRISMA LOGIN ERROR:", error)
+        throw new Error(error?.message || "Database connection failed during login")
     }
-
-    const newUser = await prisma.user.create({
-        data: {
-            firstName,
-            lastName,
-        },
-    })
-    return newUser
 }
 
 export async function getQuestions(subject: string, classLevel: number) {
