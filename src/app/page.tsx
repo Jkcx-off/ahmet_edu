@@ -20,7 +20,7 @@ type Result = {
   subject: string
   score: number
   status: string
-  createdAt: Date
+  createdAt: string
 }
 
 const subjects = [
