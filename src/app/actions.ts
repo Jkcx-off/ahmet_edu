@@ -25,9 +25,10 @@ export async function loginUser(firstName: string, lastName: string) {
             select: { id: true, firstName: true, lastName: true }
         })
         return newUser
-    } catch (error: Error | any) {
+    } catch (error: unknown) {
         console.error("PRISMA LOGIN ERROR:", error)
-        return { error: error?.message || "Database connection failed during login" }
+        const err = error as Error
+        return { error: err?.message || "Database connection failed during login" }
     }
 }
 
@@ -276,7 +277,7 @@ export async function checkUserTestStatus(userId: string, subject: string) {
 }
 
 export async function getUserResults(userId: string) {
-    return await prisma.result.findMany({
+    const results = await prisma.result.findMany({
         where: {
             userId,
         },
@@ -284,12 +285,13 @@ export async function getUserResults(userId: string) {
             createdAt: 'desc',
         },
     })
+    return results.map(r => ({ ...r, createdAt: r.createdAt.toISOString() }))
 }
 
 // Admin Actions
 
 export async function getResults() {
-    return await prisma.result.findMany({
+    const results = await prisma.result.findMany({
         orderBy: {
             createdAt: 'desc',
         },
@@ -297,6 +299,11 @@ export async function getResults() {
             user: true,
         },
     })
+    return results.map(r => ({
+        ...r,
+        createdAt: r.createdAt.toISOString(),
+        user: { ...r.user, createdAt: r.user.createdAt.toISOString() }
+    }))
 }
 
 export async function resetResult(resultId: string) {
@@ -332,11 +339,12 @@ export async function deleteQuestion(questionId: string) {
 }
 
 export async function getAdminQuestions(subject: string) {
-    return await prisma.question.findMany({
+    const questions = await prisma.question.findMany({
         where: {
             subject,
         },
     })
+    return questions.map(q => ({ ...q, createdAt: q.createdAt.toISOString() }))
 }
 
 export async function getGradingData(resultId: string) {
@@ -354,7 +362,14 @@ export async function getGradingData(resultId: string) {
         where: { subject: result.subject },
     })
 
-    return { result, questions }
+    return {
+        result: {
+            ...result,
+            createdAt: result.createdAt.toISOString(),
+            user: { ...result.user, createdAt: result.user.createdAt.toISOString() }
+        },
+        questions: questions.map(q => ({ ...q, createdAt: q.createdAt.toISOString() }))
+    }
 }
 
 export async function gradeAnswer(answerId: string, isCorrect: boolean) {
