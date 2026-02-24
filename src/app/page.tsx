@@ -69,8 +69,15 @@ export default function Home() {
 
     setLoading(true)
     try {
-      const user = await loginUser(firstName, lastName)
-      setSession(user as UserSession)
+      const response = await loginUser(firstName, lastName)
+
+      if (response && 'error' in response) {
+        setError(response.error as string)
+        return
+      }
+
+      const user = response as UserSession
+      setSession(user)
 
       // Save to storage immediately on login
       sessionStorage.setItem('test_user_id', user.id)

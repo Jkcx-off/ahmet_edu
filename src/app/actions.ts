@@ -27,7 +27,7 @@ export async function loginUser(firstName: string, lastName: string) {
         return newUser
     } catch (error: Error | any) {
         console.error("PRISMA LOGIN ERROR:", error)
-        throw new Error(error?.message || "Database connection failed during login")
+        return { error: error?.message || "Database connection failed during login" }
     }
 }
 
