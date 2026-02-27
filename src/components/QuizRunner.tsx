@@ -19,10 +19,9 @@ type Question = {
 type QuizRunnerProps = {
     questions: Question[]
     subject: string
-    classLevel: number
 }
 
-export default function QuizRunner({ questions, subject, classLevel }: QuizRunnerProps) {
+export default function QuizRunner({ questions, subject }: QuizRunnerProps) {
     const router = useRouter()
     const [currentQuestion, setCurrentQuestion] = useState(0)
     // Determine initial time based on subject
@@ -134,7 +133,7 @@ export default function QuizRunner({ questions, subject, classLevel }: QuizRunne
                 setStatus('CHEATED')
             } else {
                 const questionIds = questions.map(q => q.id)
-                const result = await submitTest(userId, subject, finalAnswers, questionIds, classLevel)
+                const result = await submitTest(userId, subject, finalAnswers, questionIds)
                 setScore(result.score)
                 setStatus(result.status)
                 if (result.feedback) {
@@ -313,7 +312,7 @@ export default function QuizRunner({ questions, subject, classLevel }: QuizRunne
         <div className="w-full max-w-3xl mx-auto px-4 sm:px-0">
             <div className="flex justify-between items-center mb-6 pt-4 sm:pt-0">
                 <div className="text-sm font-medium text-slate-300">
-                    Question {currentQuestion + 1} of {questions.length}
+                    Question <span className="text-white font-bold">{currentQuestion + 1}</span> <span className="mx-1">of</span> <span className="text-white font-bold">{questions.length}</span>
                 </div>
                 {/* Timer */}
                 <div className={cn("flex items-center gap-2 font-mono font-bold px-3 py-1 rounded-full text-white bg-slate-800 border border-slate-700", timeLeft < 60 && "text-red-400 bg-red-950/50 border-red-900")}>

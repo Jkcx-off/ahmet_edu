@@ -76,7 +76,6 @@ export default function AdminDashboard() {
     const [op3, setOp3] = useState('')
     const [op4, setOp4] = useState('')
     const [correct, setCorrect] = useState(0)
-    const [classLevel, setClassLevel] = useState(10)
     const [formOpen, setFormOpen] = useState(false)
 
     // Question Management Filter
@@ -159,13 +158,12 @@ export default function AdminDashboard() {
     const handleAddQuestion = async (e: React.FormEvent) => {
         e.preventDefault()
         const options = qType === 'MCQ' ? [op1, op2, op3, op4] : []
-        await addQuestion(subject, qText, qType, options, Number(correct), classLevel)
+        await addQuestion(subject, qText, qType, options, Number(correct), 10)
         setQText('')
         setOp1('')
         setOp2('')
         setOp3('')
         setOp4('')
-        setClassLevel(10)
         setFormOpen(false)
         alert('Question Added!')
         if (activeTab === 'questions' && filterSubject === subject) {
@@ -392,22 +390,13 @@ export default function AdminDashboard() {
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={handleAddQuestion} className="space-y-4">
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <select
                                     className="p-2 border rounded bg-white dark:bg-slate-800"
                                     value={subject}
                                     onChange={e => setSubject(e.target.value)}
                                 >
                                     {['Chemistry', 'Physics', 'English', 'Biology'].map(s => <option key={s} value={s}>{s}</option>)}
-                                </select>
-                                <select
-                                    className="p-2 border rounded bg-white dark:bg-slate-800"
-                                    value={classLevel}
-                                    onChange={e => setClassLevel(Number(e.target.value))}
-                                >
-                                    {[6, 7, 8, 9, 10, 11, 12].map(num => (
-                                        <option key={num} value={num}>Grade {num}</option>
-                                    ))}
                                 </select>
                                 <select
                                     className="p-2 border rounded bg-white dark:bg-slate-800"
@@ -589,9 +578,6 @@ export default function AdminDashboard() {
                                         <div className="flex items-center gap-2 mb-1">
                                             <span className={cn("text-xs px-2 py-0.5 rounded font-bold uppercase", q.type === 'MCQ' ? "bg-green-100 text-green-700" : "bg-purple-100 text-purple-700")}>
                                                 {q.type}
-                                            </span>
-                                            <span className="text-xs px-2 py-0.5 rounded font-bold uppercase bg-blue-100 text-blue-700">
-                                                Grade {q.classLevel}
                                             </span>
                                         </div>
                                         <p className="font-medium text-sm sm:text-base">{q.text}</p>

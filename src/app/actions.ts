@@ -32,13 +32,10 @@ export async function loginUser(firstName: string, lastName: string) {
     }
 }
 
-export async function getQuestions(subject: string, classLevel: number) {
+export async function getQuestions(subject: string) {
     const questions = await prisma.question.findMany({
         where: {
             subject,
-            classLevel: {
-                lte: classLevel // Fetch questions for this class and below
-            }
         },
         select: {
             id: true,
@@ -47,9 +44,6 @@ export async function getQuestions(subject: string, classLevel: number) {
             options: true,
             correctAnswerText: true,
             difficulty: true, // Needed for sorting/grouping
-        },
-        orderBy: {
-            difficulty: 'asc',
         },
     })
 
@@ -62,6 +56,8 @@ export async function getQuestions(subject: string, classLevel: number) {
         return arr
     }
 
+    let finalQuestions: typeof questions = []
+
     if (subject === 'English') {
         const mcqs = questions.filter(q => q.type === 'MCQ' || !q.type) // Default to MCQ
         const essays = questions.filter(q => q.type === 'ESSAY')
@@ -71,40 +67,34 @@ export async function getQuestions(subject: string, classLevel: number) {
         const selectedEssays = shuffle(essays).slice(0, 1)
         const selectedSpeaking = shuffle(speaking).slice(0, 2)
 
-        return [...selectedMCQs, ...selectedEssays, ...selectedSpeaking]
-    }
+        finalQuestions = [...selectedMCQs, ...selectedEssays, ...selectedSpeaking]
+    } else {
+        // Default logic for other subjects (20 questions: 7/7/6)
+        const grouped: Record<number, typeof questions> = {}
+        questions.forEach(q => {
+            const d = q.difficulty || 1
+            if (!grouped[d]) grouped[d] = []
+            grouped[d].push(q)
+        })
 
-
-
-    // Default logic for other subjects (20 questions: 7/7/6)
-    const grouped: Record<number, typeof questions> = {}
-    questions.forEach(q => {
-        const d = q.difficulty || 1
-        if (!grouped[d]) grouped[d] = []
-        grouped[d].push(q)
-    })
-
-    const targets: Record<number, number> = {
-        1: 7, // Easy
-        2: 7, // Medium
-        3: 6  // Hard
-    }
-
-    const finalQuestions: typeof questions = []
-    const sortedLevels = Object.keys(grouped).map(Number).sort((a, b) => a - b)
-
-    for (const level of sortedLevels) {
-        const group = grouped[level]
-        // Fisher-Yates Shuffle for this group
-        for (let i = group.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [group[i], group[j]] = [group[j], group[i]];
+        const targets: Record<number, number> = {
+            1: 7, // Easy
+            2: 7, // Medium
+            3: 6  // Hard
         }
 
-        // Take subset
-        const count = targets[level] || group.length
-        finalQuestions.push(...group.slice(0, count))
+        const sortedLevels = Object.keys(grouped).map(Number).sort((a, b) => a - b)
+
+        for (const level of sortedLevels) {
+            const group = grouped[level]
+            const shuffledGroup = shuffle(group)
+            const count = targets[level] || group.length
+            finalQuestions.push(...shuffledGroup.slice(0, count))
+        }
     }
+
+    // Force strictly easy -> hard progression based on difficulty
+    finalQuestions.sort((a, b) => (a.difficulty || 1) - (b.difficulty || 1))
 
     return finalQuestions
 }
@@ -119,7 +109,7 @@ const normalize = (text: string) => {
         .toLowerCase()
 }
 
-export async function submitTest(userId: string, subject: string, answers: Record<string, string | number>, questionIds: string[], classLevel: number) {
+export async function submitTest(userId: string, subject: string, answers: Record<string, string | number>, questionIds: string[], classLevel: number = 10) {
     // Only fetch the questions that were actually in the test
     const questions = await prisma.question.findMany({
         where: {

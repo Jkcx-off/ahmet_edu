@@ -37,7 +37,6 @@ export default function Home() {
   const [lastName, setLastName] = useState('') // Added Surname field
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [selectedClass, setSelectedClass] = useState<number | ''>(10)
   const router = useRouter()
 
   // Restore session from storage on mount
@@ -107,7 +106,7 @@ export default function Home() {
     sessionStorage.setItem('test_user_id', session.id)
     sessionStorage.setItem('test_user_name', `${session.firstName} ${session.lastName}`)
 
-    router.push(`/quiz/${subject}?classLevel=${selectedClass}`)
+    router.push(`/quiz/${subject}`)
   }
 
   return (
@@ -177,19 +176,6 @@ export default function Home() {
               <Button variant="link" onClick={() => setError('')} className="ml-2 text-red-300">Dismiss</Button>
             </div>
           )}
-
-          <div className="mb-8 w-full max-w-sm flex flex-col items-center animate-in fade-in zoom-in duration-500 delay-150">
-            <label className="text-slate-300 font-serif mb-2 tracking-wide">Select your current Grade Level:</label>
-            <select
-              value={selectedClass}
-              onChange={e => setSelectedClass(Number(e.target.value))}
-              className="w-full h-12 px-4 rounded-md bg-white border-transparent focus:ring-2 focus:ring-slate-400 text-slate-900 text-lg font-serif outline-none"
-            >
-              {[6, 7, 8, 9, 10, 11, 12].map(num => (
-                <option key={num} value={num}>Grade {num}</option>
-              ))}
-            </select>
-          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {subjects.map((sub) => {

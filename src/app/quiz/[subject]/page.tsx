@@ -14,10 +14,8 @@ interface PageProps {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
-export default async function QuizPage({ params, searchParams }: PageProps) {
+export default async function QuizPage({ params }: PageProps) {
     const { subject } = await params
-    const resolvedSearchParams = await searchParams
-    const classLevel = parseInt(resolvedSearchParams.classLevel as string) || 10
 
     // Validate subject
     const validSubjects = ['Chemistry', 'Physics', 'English', 'Biology']
@@ -25,7 +23,7 @@ export default async function QuizPage({ params, searchParams }: PageProps) {
         redirect('/')
     }
 
-    const questions = await getQuestions(subject, classLevel)
+    const questions = await getQuestions(subject)
 
     if (!questions || questions.length === 0) {
         return (
@@ -39,7 +37,7 @@ export default async function QuizPage({ params, searchParams }: PageProps) {
     return (
         <main className="flex min-h-screen flex-col items-center p-4 md:p-12 bg-[#0f172a] selection:bg-none">
             {/* Passing data to client component */}
-            <QuizRunner questions={questions} subject={subject} classLevel={classLevel} />
+            <QuizRunner questions={questions} subject={subject} />
         </main>
     )
 }
